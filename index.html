@@ -322,18 +322,20 @@
         }
 
         // ক্লাউড থেকে পার্মানেন্টলি ডিলিট করার লজিক
-        window.deleteClient = async function(docId) {
-            if (confirm("আপনি কি নিশ্চিত যে এই রেকর্ডটি ক্লাউড ডাটাবেজ থেকে চিরতরে ডিলিট করতে চান? এটি করলে সব ডিভাইস থেকে মুছে যাবে।")) {
-                try {
-                    await deleteDoc(doc.getFirestore(app), "clients", docId);
-                    document.getElementById('profileView').classList.remove('active');
-                    document.getElementById('mainDashboard').classList.remove('hidden');
-                    fetchClients();
-                } catch (error) {
-                    alert("ডিলিট করা সম্ভব হয়নি।");
-                }
-            }
+       window.deleteClient = async function(docId) {
+    if (confirm("আপনি কি নিশ্চিত যে এই রেকর্ডটি ক্লাউড ডাটাবেজ থেকে চিরতরে ডিলিট করতে চান? এটি করলে সব ডিভাইস থেকে মুছে যাবে।")) {
+        try {
+            // ভুল কোডটি বদলে এখানে সরাসরি db ব্যবহার করা হয়েছে
+            await deleteDoc(doc(db, "clients", docId)); 
+            document.getElementById('profileView').classList.remove('active');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            fetchClients();
+        } catch (error) {
+            console.error(error);
+            alert("ডিলিট করা সম্ভব হয়নি।");
         }
+    }
+}
 
         // প্রথমবার ওপেনিংয়ে লোড রান
         fetchClients();
