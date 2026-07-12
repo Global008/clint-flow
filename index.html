@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রিমিয়াম ক্লায়েন্ট ডেটাবেজ</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-surface: #131c2e;
+            --bg-input: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --border: #24334d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Modern Premium Header & Text Logo */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .logo-area .text-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo-area .text-logo i {
+            -webkit-text-fill-color: var(--accent);
+        }
+
+        .logo-area p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: 400;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-grow: 1;
+            justify-content: flex-end;
+            max-width: 550px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .add-btn:hover { transform: scale(1.05); }
+
+        /* Dashboard Setup */
+        .section-title {
+            font-size: 1.15rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Premium Client Cards */
+        .client-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .client-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .file-badge {
+            background: rgba(59, 130, 246, 0.12);
+            color: #60a5fa;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .serial-badge {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .client-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.6rem;
+            color: var(--text-main);
+        }
+
+        .card-meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .card-meta div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-meta i {
+            color: var(--accent);
+            width: 14px;
+        }
+
+        /* Modal Form CSS */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 10, 18, 0.85);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            width: 95%;
+            max-width: 480px;
+            border-radius: 20px;
+            padding: 1.75rem;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: none; border: none;
+            color: var(--text-muted); cursor: pointer; font-size: 1.3rem;
+        }
+
+        .modal h2 { margin-bottom: 1.2rem; font-size: 1.35rem; display: flex; align-items: center; gap: 10px;}
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; }
+        .form-control {
+            width: 100%; padding: 10px 12px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 8px; color: white; font-size: 0.95rem;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent); }
+
+        .submit-btn {
+            width: 100%; background: var(--success); color: white; border: none;
+            padding: 11px; border-radius: 8px; font-size: 1rem; font-weight: 600;
+            cursor: pointer; margin-top: 0.5rem; transition: background 0.2s;
+        }
+        .submit-btn:hover { opacity: 0.9; }
+
+        /* Dynamic Separate Profile Page */
+        .profile-view { display: none; animation: fadeIn 0.35s ease; }
+        .profile-view.active { display: block; }
+        .main-dashboard.hidden { display: none; }
+
+        .back-btn {
+            background: none; border: 1px solid var(--border); color: var(--text-main);
+            padding: 8px 14px; border-radius: 8px; cursor: pointer; display: inline-flex;
+            align-items: center; gap: 8px; margin-bottom: 1.5rem; font-size: 0.95rem;
+        }
+        .back-btn:hover { background: var(--border); }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+            background: var(--bg-surface);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) { 
+            .profile-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.25rem; } 
+        }
+
+        .profile-info h2 { font-size: 2rem; margin-bottom: 1.2rem; color: var(--text-main); font-weight: 700; }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+        
+        .info-left i { color: var(--accent); font-size: 1.1rem; width: 20px; }
+        .info-value { font-weight: 500; text-align: right; color: var(--text-main); }
+
+        .document-area {
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .document-area img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            object-fit: contain;
+            margin-top: 10px;
+        }
+
+        .delete-action-container {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+
+        .delete-btn {
+            width: 100%;
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .no-data {
+            text-align: center; color: var(--text-muted); padding: 3.5rem 1rem; grid-column: 1/-1;
+            background: var(--bg-surface); border-radius: 16px; border: 1px dashed var(--border);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- MAIN DASHBOARD SCREEN -->
+        <main class="main-dashboard" id="mainDashboard">
+            <header>
+                <div class="logo-area">
+                    <div class="text-logo"><i class="fa-solid fa-folder-tree"></i> CLIENTFLOW</div>
+                    <p>স্মার্ট ডিজিটাল ক্লায়েন্ট ডেটাবেজ সিস্টেম</p>
+                </div>
+                <div class="controls">
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="search-box" id="searchBox" placeholder="ফাইল নাম্বার বা নাম লিখে খুঁজুন..." oninput="handleSearch()">
+                    </div>
+                    <button class="add-btn" onclick="toggleModal(true)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+            </header>
+
+            <!-- Recent Section View (Last 3 Days Tracking) -->
+            <div id="recentSectionWrapper">
+                <div class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color:#fbbf24;"></i> সাম্প্রতিক চুক্তি (গত ৩ দিন)</div>
+                <div class="grid-layout" id="recentGrid"></div>
+            </div>
+
+            <!-- All Database Archive View -->
+            <div id="allSectionWrapper">
+                <div class="section-title"><i class="fa-solid fa-box-archive"></i> সকল রেকর্ড আর্কাইভ</div>
+                <div class="grid-layout" id="allClientsGrid"></div>
+            </div>
+        </main>
+
+
+        <!-- SEPARATE DEDICATED INDIVIDUAL CLIENT PROFILE PAGE -->
+        <section class="profile-view" id="profileView">
+            <button class="back-btn" onclick="closeProfile()"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ডে ফিরে যান</button>
+            <div class="profile-grid" id="profileContainer">
+                <!-- Data Will Be Injected Dynamically By JS Engine -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ADD NEW CLIENT MODAL POPUP FORM -->
+    <div class="modal" id="clientModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="toggleModal(false)"><i class="fa-solid fa-xmark"></i></button>
+            <h2><i class="fa-solid fa-user-plus" style="color: var(--accent);"></i> নতুন ক্লায়েন্ট এন্ট্রি ফর্ম</h2>
+            
+            <form id="clientForm" onsubmit="saveClient(event)">
+                <div class="form-group">
+                    <label>ফাইল নাম্বার *</label>
+                    <input type="text" id="fileNo" class="form-control" placeholder="যেমন: F-9921" required>
+                </div>
+                <div class="form-group">
+                    <label>ক্লায়েন্টের নাম *</label>
+                    <input type="text" id="clientName" class="form-control" placeholder="যেমন: শাহ আলম" required>
+                </div>
+                <div class="form-group">
+                    <label>কি কাজের জন্য (কাজের বিবরণ) *</label>
+                    <input type="text" id="jobType" class="form-control" placeholder="যেমন: Waiter/Canada Visa" required>
+                </div>
+                <div class="form-group">
+                    <label>ফোন নাম্বার *</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="যেমন: 01XXXXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label>চুক্তি সম্পাদনকারী (স্টাফ/ম্যানেজার নাম) *</label>
+                    <input type="text" id="handlerName" class="form-control" placeholder="যেমন: ইয়ামিন" required>
+                </div>
+                <div class="form-group">
+                    <label>চুক্তিপত্রের ছবি *</label>
+                    <input type="file" id="agreementImg" class="form-control" accept="image/*" required>
+                </div>
+                <button type="submit" class="submit-btn">সিস্টেমে সংরক্ষণ করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ENGINE JAVASCRIPT CODE -->
+    <script>
+        // LocalStorage মেমরি ব্যাংক থেকে ডেটা লোড
+        let clients = JSON.parse(localStorage.getItem('smart_clients_v2')) || [];
+
+        window.onload = function() {
+            renderDashboard(clients);
+        };
+
+        // মোডাল পপআপ অন/অফ লজিক
+        function toggleModal(show) {
+            const modal = document.getElementById('clientModal');
+            if (show) modal.classList.add('active');
+            else {
+                modal.classList.remove('active');
+                document.getElementById('clientForm').reset();
+            }
+        }
+
+        // নতুন ক্লায়েন্ট রেকর্ড যোগ ও ইমেজ এনকোডিং মেকানিজম
+        function saveClient(e) {
+            e.preventDefault();
+
+            // ইনপুট ভ্যালু কালেকশন
+            const fileNo = document.getElementById('fileNo').value.trim();
+            const name = document.getElementById('clientName').value.trim();
+            const jobType = document.getElementById('jobType').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const handlerName = document.getElementById('handlerName').value.trim();
+            const imgFile = document.getElementById('agreementImg').files[0];
+
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const newClient = {
+                    id: Date.now(),
+                    fileNo: fileNo, // সঠিক ম্যাপিং করা হয়েছে
+                    name: name,
+                    jobType: jobType,
+                    phone: phone,
+                    handlerName: handlerName,
+                    image: reader.result,
+                    timestamp: new Date().getTime() 
+                };
+
+                clients.push(newClient);
+                localStorage.setItem('smart_clients_v2', JSON.stringify(clients));
+                
+                toggleModal(false);
+                renderDashboard(clients);
+            }
+            if (imgFile) reader.readAsDataURL(imgFile);
+        }
+
+        // ড্যাশবোর্ড আপডেট ও রেন্ডারিং প্রসেসর
+        function renderDashboard(dataArray) {
+            const recentGrid = document.getElementById('recentGrid');
+            const allClientsGrid = document.getElementById('allClientsGrid');
+            
+            recentGrid.innerHTML = '';
+            allClientsGrid.innerHTML = '';
+
+            if (dataArray.length === 0) {
+                allClientsGrid.innerHTML = `<div class="no-data"><i class="fa-regular fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px; display:block; color:var(--accent);"></i> কোনো ক্লায়েন্ট রেকর্ড নেই। নতুন ক্লায়েন্ট যোগ করতে ডানদিকের '+' আইকনে চাপুন।</div>`;
+                document.getElementById('recentSectionWrapper').style.display = 'none';
+                return;
+            } else {
+                document.getElementById('recentSectionWrapper').style.display = 'block';
+            }
+
+            // রিসেন্ট ট্র্যাকিং টাইম জোন (গত ৩ দিন = ৭২ ঘণ্টা)
+            const threeDaysAgo = new Date().getTime() - (3 * 24 * 60 * 60 * 1000);
+            let hasRecent = false;
+
+            // নতুন এন্ট্রি ড্যাশবোর্ডের প্রথমে দেখাতে লুপটি রিভার্স করা হয়েছে
+            // কিন্তু সিরিয়াল নাম্বার প্রপারলি ১ থেকে কাউন্ট হবে
+            const reversedArray = [...dataArray].reverse();
+
+            reversedArray.forEach((client) => {
+                // মূল অ্যারে থেকে অরিজিনাল ইনডেক্স ভিত্তিক সিরিয়াল বের করা
+                const originalSerial = dataArray.findIndex(c => c.id === client.id) + 1;
+
+                const cardHTML = `
+                    <div class="client-card" onclick="openProfile(${client.id})">
+                        <div class="card-header">
+                            <span class="file-badge">ফাইল: ${client.fileNo}</span>
+                            <span class="serial-badge">#${originalSerial}</span>
+                        </div>
+                        <h3>${client.name}</h3>
+                        <div class="card-meta">
+                            <div><i class="fa-solid fa-briefcase"></i> <span>কাজ: ${client.jobType}</span></div>
+                            <div><i class="fa-solid fa-user-gear"></i> <span>স্টাফ: ${client.handlerName}</span></div>
+                        </div>
+                    </div>
+                `;
+
+                allClientsGrid.innerHTML += cardHTML;
+
+                if (client.timestamp >= threeDaysAgo) {
+                    recentGrid.innerHTML += cardHTML;
+                    hasRecent = true;
+                }
+            });
+
+            if (!hasRecent) {
+                recentGrid.innerHTML = `<div class="no-data" style="padding: 1.5rem; border:none;">গত ৩ দিনে কোনো নতুন চুক্তিপত্র যোগ করা হয়নি।</div>`;
+            }
+        }
+
+        // লাইভ ইন্সট্যান্ট সার্চ প্রসেস (নাম এবং ফাইল নম্বর দুটোই ট্র্যাক করবে)
+        function handleSearch() {
+            const query = document.getElementById('searchBox').value.toLowerCase().trim();
+            const filtered = clients.filter(c => 
+                c.fileNo.toLowerCase().includes(query) || 
+                c.name.toLowerCase().includes(query)
+            );
+            renderDashboard(filtered);
+        }
+
+        // ইন্ডিভিজুয়াল আলাদা ডেডিকেটেড ক্লায়েন্ট ভিউ পেজ জেনারেটর
+        function openProfile(id) {
+            const client = clients.find(c => c.id === id);
+            if (!client) return;
+
+            const profileContainer = document.getElementById('profileContainer');
+            const originalSerial = clients.findIndex(c => c.id === id) + 1;
+            
+            // তারিখ ও সময় একদম নিখুঁত ফরম্যাটিং বাংলা ভাষায়
+            const entryDate = new Date(client.timestamp).toLocaleDateString('bn-BD', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            profileContainer.innerHTML = `
+                <div class="profile-info">
+                    <h2>${client.name}</h2>
+                    
+                    <div class="info-item">
+                        <div class="info-left"><i class="fa-solid fa-hashtag"></i> <span>সিরিয়াল নাম্বার</span></div>
+                        <span class="info-value">#${originalSerial}</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-left"><i class="fa-solid fa-folder-open"></i> <span>ফাইল নাম্বার</span></div>
+                        <span class="info-value" style="color: var(--accent); font-weight:700;">${client.fileNo}</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-left"><i class="fa-solid fa-briefcase"></i> <span>কাজের ধরন</span></div>
+                        <span class="info-value">${client.jobType}</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-left"><i class="fa-solid fa-phone"></i> <span>ফোন নাম্বার</span></div>
+                        <span class="info-value">${client.phone}</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-left"><i class="fa-solid fa-user-check"></i> <span>চুক্তি করেছেন</span></div>
+                        <span class="info-value" style="color: var(--success); font-weight:600;">${client.handlerName}</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-left"><i class="fa-solid fa-calendar-check"></i> <span>চুক্তির তারিখ</span></div>
+                        <span class="info-value">${entryDate}</span>
+                    </div>
+
+                    <!-- চুক্তি বাতিল ও ডাটা ডিলিট অপশন -->
+                    <div class="delete-action-container">
+                        <button class="delete-btn" onclick="deleteClient(${client.id})">
+                            <i class="fa-solid fa-trash-can"></i> চুক্তি শেষ / রেকর্ড ডিলিট করুন
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="document-area">
+                    <p style="margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-file-image"></i> ডিজিটাল চুক্তিপত্রের কপি</p>
+                    <img src="${client.image}" alt="চুক্তিপত্রের ছবি">
+                </div>
+            `;
+
+            // স্ক্রিন পরিবর্তন অ্যানিমেশন
+            document.getElementById('mainDashboard').classList.add('hidden');
+            document.getElementById('profileView').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ক্লায়েন্ট রেকর্ড মেমরি থেকে পার্মানেন্টলি ডিলিট করার ফাংশন
+        function deleteClient(id) {
+            if (confirm("আপনি কি নিশ্চিত যে এই ক্লায়েন্টের চুক্তি শেষ এবং আপনি রেকর্ডটি মেমরি থেকে চিরতরে ডিলিট করতে চান?")) {
+                clients = clients.filter(c => c.id !== id);
+                localStorage.setItem('smart_clients_v2', JSON.stringify(clients));
+                closeProfile();
+                renderDashboard(clients);
+            }
+        }
+
+        // ড্যাশবোর্ডে ব্যাক করার ফাংশন
+        function closeProfile() {
+            document.getElementById('profileView').classList.remove('active');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
