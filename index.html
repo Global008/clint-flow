@@ -199,7 +199,7 @@
             }
         }
 
-        // ক্লাউডে নতুন ডেটা সেভ করা (Save Data)
+// ক্লাউডে নতুন ডেটা সেভ করা (Auto Image Compression সহ)
         async function saveClient(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
@@ -213,28 +213,71 @@
             const handlerName = document.getElementById('handlerName').value.trim();
             const imgFile = document.getElementById('agreementImg').files[0];
 
-            const reader = new FileReader();
-            reader.onloadend = async function () {
-                try {
-                    await addDoc(collection(db, "clients"), {
-                        fileNo: fileNo,
-                        name: name,
-                        jobType: jobType,
-                        phone: phone,
-                        handlerName: handlerName,
-                        image: reader.result,
-                        timestamp: new Date().getTime()
-                    });
-                    toggleModal(false);
-                    submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
-                    submitBtn.disabled = false;
-                    fetchClients();
-                } catch (e) {
-                    alert("ডাটা সেভ হয়নি! ফায়ারবেস রুলস চেক করুন।");
-                    submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
-                    submitBtn.disabled = false;
-                }
+            // ছবি সিলেক্ট না করলে অ্যালার্ট দেবে
+            if (!imgFile) {
+                alert("দয়া করে চুক্তিপত্রের ছবি সিলেক্ট করুন।");
+                submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
+                submitBtn.disabled = false;
+                return;
             }
+
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const img = new Image();
+                img.src = reader.result;
+                img.onload = async function () {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // ছবির সর্বোচ্চ সাইজ নির্ধারণ (১০০০ পিক্সেল)
+                    const MAX_WIDTH = 1000;
+                    const MAX_HEIGHT = 1000;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // ছবি কমপ্রেস করে ৬০% কোয়ালিটিতে আনা হচ্ছে
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+
+                    try {
+                        await addDoc(collection(db, "clients"), {
+                            fileNo: fileNo,
+                            name: name,
+                            jobType: jobType,
+                            phone: phone,
+                            handlerName: handlerName,
+                            image: compressedBase64, // সাইজ ছোট করা ছবি ডাটাবেজে যাবে
+                            timestamp: new Date().getTime()
+                        });
+                        
+                        toggleModal(false);
+                        submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
+                        submitBtn.disabled = false;
+                        fetchClients();
+                    } catch (error) {
+                        console.error("Error saving document: ", error);
+                        alert("ডাটা সেভ হয়নি! আসল সমস্যা: " + error.message);
+                        submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
+                        submitBtn.disabled = false;
+                    }
+                };
+            };
+            
             if (imgFile) reader.readAsDataURL(imgFile);
         }
 
