@@ -9,6 +9,124 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+/* পুরো স্ক্রিন জুড়ে লগইন বক্সটিকে মাঝখানে রাখার জন্য */
+.auth-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: radial-gradient(circle at top left, #1e1e2f, #0f0f1a); /* হালকা গ্লোয়িং ব্যাকগ্রাউন্ড */
+}
+
+/* কাঁচের মতো ভাসমান কার্ড এফেক্ট */
+.auth-card {
+    background: rgba(30, 30, 47, 0.7); /* হালকা ট্রান্সপারেন্ট */
+    backdrop-filter: blur(12px); /* কাঁচের মতো ঝাপসা করার ম্যাজিক */
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* সূক্ষ্ম সাদা বর্ডার */
+    border-radius: 24px;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* ব্র্যান্ডের স্টাইল */
+.auth-brand {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.brand-icon {
+    font-size: 2.5rem;
+    color: var(--accent, #6c5ce7); /* আপনার অ্যাপের অ্যাকসেন্ট কালার */
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 8px rgba(108, 92, 231, 0.5)); /* নিয়ন গ্লো */
+}
+.auth-brand h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    color: #fff;
+}
+.auth-brand p {
+    font-size: 0.9rem;
+    color: #a0a0b0;
+}
+
+/* ইনপুট বক্সের চমৎকার ডিজাইন */
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.input-group label {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+.input-group label i {
+    margin-right: 6px;
+    color: var(--accent, #6c5ce7);
+}
+.input-group input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+/* ইনপুট বক্সে ক্লিক করলে নিয়ন বর্ডার জ্বলবে */
+.input-group input:focus {
+    border-color: var(--accent, #6c5ce7);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+}
+
+/* শাইনি এবং এনিমেটেড বাটন */
+.auth-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent, #6c5ce7), #a29bfe);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+}
+
+/* ফুটার এরিয়া */
+.auth-footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: #a0a0b0;
+}
+.auth-footer a {
+    color: var(--accent, #6c5ce7);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: color 0.2s;
+}
+.auth-footer a:hover {
+    text-decoration: underline;
+}
         :root {
             --bg-primary: #0b0f19;
             --bg-surface: #131c2e;
@@ -91,8 +209,41 @@
     </style>
 </head>
 <body>
+<!-- লগইন ও রেজিস্ট্রেশন কার্ডের মূল কন্টেইনার -->
+<div id="authContainer" class="auth-wrapper">
+    <div class="auth-card">
+        <!-- ব্র্যান্ড লগো এবং নাম -->
+        <div class="auth-brand">
+            <i class="fa-solid fa-wind brand-icon"></i>
+            <h2>Clint Flow</h2>
+            <p>আপনার ক্লায়েন্ট ডাটাবেজ লক করা আছে</p>
+        </div>
 
-    <div class="container">
+        <!-- লগইন ফর্ম -->
+        <form id="authForm">
+            <div class="input-group">
+                <label for="authEmail"><i class="fa-regular fa-envelope"></i> ইমেইল এড্রেস</label>
+                <input type="email" id="authEmail" placeholder="staff@clintflow.com" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="authPassword"><i class="fa-solid fa-key"></i> পাসওয়ার্ড</label>
+                <input type="password" id="authPassword" placeholder="৬ সংখ্যার পাসওয়ার্ড দিন" required>
+            </div>
+
+            <button type="submit" id="authSubmitBtn" class="auth-btn">
+                <span>লগইন করুন</span> <i class="fa-solid fa-right-to-bracket"></i>
+            </button>
+        </form>
+
+        <!-- নিচে ছোট করে রেজিষ্ট্রেশন ও লগইন মোড পরিবর্তনের লিংক -->
+        <div class="auth-footer">
+            <span id="authToggleText">নতুন স্টাফ?</span>
+            <a href="#" id="authToggleLink">একটি অ্যাকাউন্ট তৈরি করুন</a>
+        </div>
+    </div>
+</div>
+    <div class="container" id="appContainer" style="display: none;">
         <!-- MAIN DASHBOARD -->
         <main class="main-dashboard" id="mainDashboard">
             <header>
@@ -148,88 +299,209 @@
 
     <!-- FIREBASE SERVICES MODULES CODE -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// Authentication এর মডিউলগুলো ইমপোর্ট করলাম
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // আপনার প্রজেক্টের রিয়েল কনফিগ
-        const firebaseConfig = {
-            apiKey: "AIzaSyAo5NsSb_N-zGCwglxjufqLkWd0ebTS0nw",
-            authDomain: "clint-flow-8763d.firebaseapp.com",
-            projectId: "clint-flow-8763d",
-            storageBucket: "clint-flow-8763d.firebasestorage.app",
-            messagingSenderId: "616696869698",
-            appId: "1:616696869698:web:3a02391305b100dcfc8edb",
-            measurementId: "G-7CEGFWYSQP"
-        };
+// আপনার Clint Flow অ্যাপের ফায়ারবেস কনফিগারেশন
+const firebaseConfig = {
+    apiKey: "AIzaSyAo5NsSb_N-zGCwglxjufqLkWd0ebTS0nw",
+    authDomain: "clint-flow-8763d.firebaseapp.com",
+    projectId: "clint-flow-8763d",
+    storageBucket: "clint-flow-8763d.firebasestorage.app",
+    messagingSenderId: "616696869698",
+    appId: "1:616696869698:web:3a02391305b100dcfc8edb",
+    measurementId: "G-7CEGFWYSQP"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        let allClientsGlobal = [];
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app); // Auth সার্ভিস সচল করা হলো
 
-        // ডোমেইন এলিমেন্টস ট্র্যাকিং
-        document.getElementById('openModalBtn').onclick = () => document.getElementById('clientModal').classList.add('active');
-        document.getElementById('closeModalBtn').onclick = () => toggleModal(false);
-        document.getElementById('backBtn').onclick = () => {
-            document.getElementById('profileView').classList.remove('active');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-        };
-        document.getElementById('searchBox').oninput = handleSearch;
-        document.getElementById('clientForm').onsubmit = saveClient;
+let allClientsGlobal = [];
+let isLoginMode = true; // লগইন নাকি রেজিষ্ট্রেশন তা ট্র্যাকিং করার জন্য ভ্যারিয়েবল
 
-        function toggleModal(show) {
-            const modal = document.getElementById('clientModal');
-            if (show) modal.classList.add('active');
-            else { modal.classList.remove('active'); document.getElementById('clientForm').reset(); }
+// DOM Elements ট্র্যাকিং
+const authContainer = document.getElementById('authContainer');
+const appContainer = document.getElementById('appContainer');
+const authForm = document.getElementById('authForm');
+const authEmail = document.getElementById('authEmail');
+const authPassword = document.getElementById('authPassword');
+const authTitle = document.querySelector('.auth-brand h2');
+const authSubTitle = document.querySelector('.auth-brand p');
+const authSubmitBtn = document.getElementById('authSubmitBtn');
+const authToggleText = document.getElementById('authToggleText');
+const authToggleLink = document.getElementById('authToggleLink');
+
+// লগইন এবং রেজিষ্ট্রেশন মুড অদল-বদল করার ফাংশন
+authToggleLink.onclick = (e) => {
+    e.preventDefault();
+    isLoginMode = !isLoginMode;
+    if (isLoginMode) {
+        authTitle.innerText = "Clint Flow";
+        authSubTitle.innerText = "আপনার ক্লায়েন্ট ডাটাবেজ লক করা আছে";
+        authSubmitBtn.innerHTML = `<span>লগইন করুন</span> <i class="fa-solid fa-right-to-bracket"></i>`;
+        authToggleText.innerText = "নতুন স্টাফ?";
+        authToggleLink.innerText = "একটি অ্যাকাউন্ট তৈরি করুন";
+    } else {
+        authTitle.innerText = "স্টাফ রেজিস্ট্রেশন";
+        authSubTitle.innerText = "সিস্টেমে যুক্ত হতে নতুন অ্যাকাউন্ট তৈরি করুন";
+        authSubmitBtn.innerHTML = `<span>রেজিস্টার করুন</span> <i class="fa-solid fa-user-plus"></i>`;
+        authToggleText.innerText = "আগে থেকেই অ্যাকাউন্ট আছে?";
+        authToggleLink.innerText = "লগইন করুন";
+    }
+};
+
+// সাইন-ইন বা সাইন-আপ ফর্ম সাবমিট হ্যান্ডলার
+authForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const email = authEmail.value.trim();
+    const password = authPassword.value.trim();
+    
+    authSubmitBtn.disabled = true;
+    authSubmitBtn.querySelector('span').innerText = "অপেক্ষা করুন...";
+
+    try {
+        if (isLoginMode) {
+            // সাইন ইন করার চেষ্টা
+            await signInWithEmailAndPassword(auth, email, password);
+        } else {
+            // নতুন অ্যাকাউন্ট তৈরি করার চেষ্টা
+            await createUserWithEmailAndPassword(auth, email, password);
+            alert("চমৎকার! সফলভাবে অ্যাকাউন্ট তৈরি হয়েছে।");
         }
-
-        // ক্লাউড থেকে ডেটা নিয়ে আসা (Fetch Data)
-        async function fetchClients() {
-            try {
-                const q = query(collection(db, "clients"), orderBy("timestamp", "asc"));
-                const querySnapshot = await getDocs(q);
-                allClientsGlobal = [];
-                let index = 1;
-                querySnapshot.forEach((doc) => {
-                    allClientsGlobal.push({ docId: doc.id, serial: index++, ...doc.data() });
-                });
-                renderDashboard(allClientsGlobal);
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-                document.getElementById('allClientsGrid').innerHTML = `<div class="no-data" style="color:var(--danger)">ডেটা লোড করতে সমস্যা হচ্ছে। আপনার ফায়ারবেস Firestore Rules 'Test Mode' এ আছে কিনা চেক করুন।</div>`;
-            }
+    } catch (error) {
+        console.error(error);
+        if(error.code === 'auth/weak-password') {
+            alert("পাসওয়ার্ডটি অত্যন্ত দুর্বল! কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড দিন।");
+        } else if (error.code === 'auth/email-already-in-use') {
+            alert("এই ইমেইলটি অলরেডি ব্যবহার করা হয়েছে। অন্য ইমেইল দিন।");
+        } else {
+            alert("ভুল ইমেইল বা পাসওয়ার্ড! অথবা ইন্টারনেট চেক করুন।");
         }
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.querySelector('span').innerText = isLoginMode ? "লগইন করুন" : "রেজিস্টার করুন";
+    }
+};
 
-// ক্লাউডে নতুন ডেটা সেভ করা (Auto Image Compression সহ)
-        async function saveClient(e) {
-            e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.innerText = "সংরক্ষণ হচ্ছে...";
-            submitBtn.disabled = true;
+// ড্যাশবোর্ডে স্টাইলিশ লগআউট বাটন যোগ করা (Inline Style সহ)
+const logoutBtn = document.createElement('button');
+logoutBtn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> লগআউট`;
 
-            const fileNo = document.getElementById('fileNo').value.trim();
-            const name = document.getElementById('clientName').value.trim();
-            const jobType = document.getElementById('jobType').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const handlerName = document.getElementById('handlerName').value.trim();
-            const imgFile = document.getElementById('agreementImg').files[0];
+// সরাসরি জাভাস্ক্রিপ্ট দিয়ে বাটনটিকে সুন্দর করা হচ্ছে
+logoutBtn.style.background = 'rgba(255, 118, 117, 0.1)'; // হালকা লালচে কাঁচের মতো ব্যাকগ্রাউন্ড
+logoutBtn.style.border = '1.5px solid rgba(255, 118, 117, 0.4)'; // লালচে বর্ডার
+logoutBtn.style.color = '#ff7675'; // লালচে নিয়ন টেক্সট
+logoutBtn.style.padding = '12px 20px';
+logoutBtn.style.borderRadius = '12px'; // আপনার প্লাস বাটনের মতো রাউন্ডেড কর্নার
+logoutBtn.style.cursor = 'pointer';
+logoutBtn.style.fontSize = '0.95rem';
+logoutBtn.style.fontWeight = '600';
+logoutBtn.style.display = 'flex';
+logoutBtn.style.alignItems = 'center';
+logoutBtn.style.gap = '8px';
+logoutBtn.style.transition = 'all 0.3s ease';
 
-            // ছবি সিলেক্ট না করলে অ্যালার্ট দেবে
-            if (!imgFile) {
-                alert("দয়া করে চুক্তিপত্রের ছবি সিলেক্ট করুন।");
-                submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
-                submitBtn.disabled = false;
-                return;
-            }
+// মাউস উপরে আনলে (Hover) সুন্দর এনিমেশন ও গ্লো হবে
+logoutBtn.onmouseenter = () => {
+    logoutBtn.style.background = '#ff7675';
+    logoutBtn.style.color = '#fff';
+    logoutBtn.style.boxShadow = '0 0 15px rgba(255, 118, 117, 0.4)'; // লালচে গ্লো
+    logoutBtn.style.transform = 'translateY(-1px)';
+};
 
+// মাউস সরিয়ে নিলে আবার আগের মতো হয়ে যাবে
+logoutBtn.onmouseleave = () => {
+    logoutBtn.style.background = 'rgba(255, 118, 117, 0.1)';
+    logoutBtn.style.color = '#ff7675';
+    logoutBtn.style.boxShadow = 'none';
+    logoutBtn.style.transform = 'translateY(0)';
+};
+
+logoutBtn.onclick = () => auth.signOut();
+document.querySelector('header').appendChild(logoutBtn);
+// ব্যবহারকারী লগইন অবস্থায় আছে কিনা তা নজরদারি করা
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // লগইন সাকসেসফুল হলে
+        authContainer.style.display = 'none';
+        appContainer.style.display = 'block';
+        fetchClients(); // ডেটাবেজ থেকে রিয়েলটাইম ক্লায়েন্ট লিস্ট নিয়ে আসা
+    } else {
+        // লগআউট অবস্থায় থাকলে
+        authContainer.style.display = 'flex';
+        appContainer.style.display = 'none';
+        authForm.reset();
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.querySelector('span').innerText = isLoginMode ? "লগইন করুন" : "রেজিস্টার করুন";
+    }
+});
+
+// ডোমেইন এলিমেন্টস ট্র্যাকিং (বাকি সব কোড আগের মতোই থাকবে...)
+document.getElementById('openModalBtn').onclick = () => document.getElementById('clientModal').classList.add('active');
+document.getElementById('closeModalBtn').onclick = () => toggleModal(false);
+document.getElementById('backBtn').onclick = () => {
+    document.getElementById('profileView').classList.remove('active');
+    document.getElementById('mainDashboard').classList.remove('hidden');
+};
+document.getElementById('searchBox').oninput = handleSearch;
+document.getElementById('clientForm').onsubmit = saveClient;
+
+function toggleModal(show) {
+    const modal = document.getElementById('clientModal');
+    if (show) modal.classList.add('active');
+    else { modal.classList.remove('active'); document.getElementById('clientForm').reset(); }
+}
+
+// ক্লাউড থেকে ডেটা নিয়ে আসা (Fetch Data)
+async function fetchClients() {
+    try {
+        const q = query(collection(db, "clients"), orderBy("timestamp", "asc"));
+        const querySnapshot = await getDocs(q);
+        allClientsGlobal = [];
+        let index = 1;
+        querySnapshot.forEach((doc) => {
+            allClientsGlobal.push({ docId: doc.id, serial: index++, ...doc.data() });
+        });
+        renderDashboard(allClientsGlobal);
+    } catch (error) {
+        console.error("Error fetching data: ", error);
+        document.getElementById('allClientsGrid').innerHTML = `<div class="no-data" style="color:var(--danger)">ডেটা লোড করতে সমস্যা হচ্ছে।</div>`;
+    }
+}
+
+// ছবির সাইজ কমপ্রেস করে সেভ করার লজিক (যা আগের বার ফিক্স করেছিলাম)
+async function saveClient(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.innerText = "সংরক্ষণ হচ্ছে...";
+    submitBtn.disabled = true;
+
+    const fileNo = document.getElementById('fileNo').value.trim();
+    const name = document.getElementById('clientName').value.trim();
+    const jobType = document.getElementById('jobType').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const handlerName = document.getElementById('handlerName').value.trim();
+    const imgFile = document.getElementById('agreementImg').files[0];
+
+    if (!imgFile) {
+        alert("দয়া করে ছবি সিলেক্ট করুন।");
+        submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
+        submitBtn.disabled = false;
+        return;
+    }
+
+    const compressImage = (file) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onloadend = function () {
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
                 const img = new Image();
-                img.src = reader.result;
-                img.onload = async function () {
+                img.src = event.target.result;
+                img.onload = () => {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-
-                    // ছবির সর্বোচ্চ সাইজ নির্ধারণ (১০০০ পিক্সেল)
                     const MAX_WIDTH = 1000;
                     const MAX_HEIGHT = 1000;
                     let width = img.width;
@@ -250,138 +522,134 @@
                     canvas.width = width;
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
-
-                    // ছবি কমপ্রেস করে ৬০% কোয়ালিটিতে আনা হচ্ছে
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
-
-                    try {
-                        await addDoc(collection(db, "clients"), {
-                            fileNo: fileNo,
-                            name: name,
-                            jobType: jobType,
-                            phone: phone,
-                            handlerName: handlerName,
-                            image: compressedBase64, // সাইজ ছোট করা ছবি ডাটাবেজে যাবে
-                            timestamp: new Date().getTime()
-                        });
-                        
-                        toggleModal(false);
-                        submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
-                        submitBtn.disabled = false;
-                        fetchClients();
-                    } catch (error) {
-                        console.error("Error saving document: ", error);
-                        alert("ডাটা সেভ হয়নি! আসল সমস্যা: " + error.message);
-                        submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
-                        submitBtn.disabled = false;
-                    }
+                    resolve(compressedBase64);
                 };
+                img.onerror = (err) => reject(err);
             };
-            
-            if (imgFile) reader.readAsDataURL(imgFile);
+            reader.onerror = (err) => reject(err);
+        });
+    };
+
+    try {
+        const compressedImg = await compressImage(imgFile);
+        await addDoc(collection(db, "clients"), {
+            fileNo: fileNo,
+            name: name,
+            jobType: jobType,
+            phone: phone,
+            handlerName: handlerName,
+            image: compressedImg,
+            timestamp: new Date().getTime()
+        });
+
+        toggleModal(false);
+        submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
+        submitBtn.disabled = false;
+        fetchClients();
+    } catch (error) {
+        console.error("Error saving document: ", error);
+        alert("ডাটা সেভ হয়নি! সমস্যা: " + error.message);
+        submitBtn.innerText = "ক্লাউড ডেটাবেজে সংরক্ষণ করুন";
+        submitBtn.disabled = false;
+    }
+}
+
+// স্ক্রিনে ডেটা সাজানো
+function renderDashboard(dataArray) {
+    const recentGrid = document.getElementById('recentGrid');
+    const allClientsGrid = document.getElementById('allClientsGrid');
+    recentGrid.innerHTML = ''; allClientsGrid.innerHTML = '';
+
+    if (dataArray.length === 0) {
+        allClientsGrid.innerHTML = `<div class="no-data"><i class="fa-regular fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px; display:block; color:var(--accent);"></i> কোনো রেকর্ড নেই। '+' আইকনে চাপুন।</div>`;
+        document.getElementById('recentSectionWrapper').style.display = 'none';
+        return;
+    }
+    document.getElementById('recentSectionWrapper').style.display = 'block';
+
+    const threeDaysAgo = new Date().getTime() - (3 * 24 * 60 * 60 * 1000);
+    let hasRecent = false;
+
+    [...dataArray].reverse().forEach((client) => {
+        const cardHTML = document.createElement('div');
+        cardHTML.className = 'client-card';
+        cardHTML.innerHTML = `
+            <div class="card-header">
+                <span class="file-badge">ফাইল: ${client.fileNo}</span>
+                <span class="serial-badge">#${client.serial}</span>
+            </div>
+            <h3>${client.name}</h3>
+            <div class="card-meta">
+                <div><i class="fa-solid fa-briefcase"></i> <span>কাজ: ${client.jobType}</span></div>
+                <div><i class="fa-solid fa-user-gear"></i> <span>স্টাফ: ${client.handlerName}</span></div>
+            </div>
+        `;
+        cardHTML.onclick = () => openProfile(client.docId);
+        allClientsGrid.appendChild(cardHTML);
+
+        if (client.timestamp >= threeDaysAgo) {
+            const recentCard = cardHTML.cloneNode(true);
+            recentCard.onclick = () => openProfile(client.docId);
+            recentGrid.appendChild(recentCard);
+            hasRecent = true;
         }
+    });
 
-        // স্ক্রিনে ডেটা সাজানো
-        function renderDashboard(dataArray) {
-            const recentGrid = document.getElementById('recentGrid');
-            const allClientsGrid = document.getElementById('allClientsGrid');
-            recentGrid.innerHTML = ''; allClientsGrid.innerHTML = '';
+    if (!hasRecent) recentGrid.innerHTML = `<div class="no-data" style="padding: 1.5rem; border:none;">গত ৩ দিনে কোনো নতুন চুক্তিপত্র যোগ করা হয়নি।</div>`;
+}
 
-            if (dataArray.length === 0) {
-                allClientsGrid.innerHTML = `<div class="no-data"><i class="fa-regular fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px; display:block; color:var(--accent);"></i> কোনো রেকর্ড নেই। '+' আইকনে চাপুন।</div>`;
-                document.getElementById('recentSectionWrapper').style.display = 'none';
-                return;
-            }
-            document.getElementById('recentSectionWrapper').style.display = 'block';
+function handleSearch() {
+    const queryText = document.getElementById('searchBox').value.toLowerCase().trim();
+    const filtered = allClientsGlobal.filter(c => 
+        c.fileNo.toLowerCase().includes(queryText) || c.name.toLowerCase().includes(queryText)
+    );
+    renderDashboard(filtered);
+}
 
-            const threeDaysAgo = new Date().getTime() - (3 * 24 * 60 * 60 * 1000);
-            let hasRecent = false;
+window.openProfile = function(docId) {
+    const client = allClientsGlobal.find(c => c.docId === docId);
+    if (!client) return;
 
-            [...dataArray].reverse().forEach((client) => {
-                const cardHTML = document.createElement('div');
-                cardHTML.className = 'client-card';
-                cardHTML.innerHTML = `
-                    <div class="card-header">
-                        <span class="file-badge">ফাইল: ${client.fileNo}</span>
-                        <span class="serial-badge">#${client.serial}</span>
-                    </div>
-                    <h3>${client.name}</h3>
-                    <div class="card-meta">
-                        <div><i class="fa-solid fa-briefcase"></i> <span>কাজ: ${client.jobType}</span></div>
-                        <div><i class="fa-solid fa-user-gear"></i> <span>স্টাফ: ${client.handlerName}</span></div>
-                    </div>
-                `;
-                cardHTML.onclick = () => openProfile(client.docId);
-                allClientsGrid.appendChild(cardHTML);
+    const entryDate = new Date(client.timestamp).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric'});
+    const profileContainer = document.getElementById('profileContainer');
+    
+    profileContainer.innerHTML = `
+        <div class="profile-info">
+            <h2>${client.name}</h2>
+            <div class="info-item"><div class="info-left"><i class="fa-solid fa-hashtag"></i> <span>সিরিয়াল নাম্বার</span></div><span class="info-value">#${client.serial}</span></div>
+            <div class="info-item"><div class="info-left"><i class="fa-solid fa-folder-open"></i> <span>ফাইল নাম্বার</span></div><span class="info-value" style="color:var(--accent); font-weight:700;">${client.fileNo}</span></div>
+            <div class="info-item"><div class="info-left"><i class="fa-solid fa-briefcase"></i> <span>কাজের ধরন</span></div><span class="info-value">${client.jobType}</span></div>
+            <div class="info-item"><div class="info-left"><i class="fa-solid fa-phone"></i> <span>ফোন নাম্বার</span></div><span class="info-value">${client.phone}</span></div>
+            <div class="info-item"><div class="info-left"><i class="fa-solid fa-user-check"></i> <span>চুক্তি করেছেন</span></div><span class="info-value" style="color:var(--success); font-weight:600;">${client.handlerName}</span></div>
+            <div class="info-item"><div class="info-left"><i class="fa-solid fa-calendar-check"></i> <span>চুক্তির তারিখ</span></div><span class="info-value">${entryDate}</span></div>
+            <div class="delete-action-container">
+                <button class="delete-btn" onclick="deleteClient('${client.docId}')"><i class="fa-solid fa-trash-can"></i> ডিলিট করুন</button>
+            </div>
+        </div>
+        <div class="document-area">
+            <p style="margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;"><i class="fa-solid fa-file-image"></i> ডিজিটাল চুক্তিপত্রের কপি</p>
+            <img src="${client.image}" alt="চুক্তিপত্র">
+        </div>
+    `;
+    document.getElementById('mainDashboard').classList.add('hidden');
+    document.getElementById('profileView').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-                if (client.timestamp >= threeDaysAgo) {
-                    const recentCard = cardHTML.cloneNode(true);
-                    recentCard.onclick = () => openProfile(client.docId);
-                    recentGrid.appendChild(recentCard);
-                    hasRecent = true;
-                }
-            });
-
-            if (!hasRecent) recentGrid.innerHTML = `<div class="no-data" style="padding: 1.5rem; border:none;">গত ৩ দিনে কোনো নতুন চুক্তিপত্র যোগ করা হয়নি।</div>`;
-        }
-
-        function handleSearch() {
-            const queryText = document.getElementById('searchBox').value.toLowerCase().trim();
-            const filtered = allClientsGlobal.filter(c => 
-                c.fileNo.toLowerCase().includes(queryText) || c.name.toLowerCase().includes(queryText)
-            );
-            renderDashboard(filtered);
-        }
-
-        // আলাদা প্রোফাইল পেজ জেনারেট
-        window.openProfile = function(docId) {
-            const client = allClientsGlobal.find(c => c.docId === docId);
-            if (!client) return;
-
-            const entryDate = new Date(client.timestamp).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric'});
-            const profileContainer = document.getElementById('profileContainer');
-            
-            profileContainer.innerHTML = `
-                <div class="profile-info">
-                    <h2>${client.name}</h2>
-                    <div class="info-item"><div class="info-left"><i class="fa-solid fa-hashtag"></i> <span>সিরিয়াল নাম্বার</span></div><span class="info-value">#${client.serial}</span></div>
-                    <div class="info-item"><div class="info-left"><i class="fa-solid fa-folder-open"></i> <span>ফাইল নাম্বার</span></div><span class="info-value" style="color:var(--accent); font-weight:700;">${client.fileNo}</span></div>
-                    <div class="info-item"><div class="info-left"><i class="fa-solid fa-briefcase"></i> <span>কাজের ধরন</span></div><span class="info-value">${client.jobType}</span></div>
-                    <div class="info-item"><div class="info-left"><i class="fa-solid fa-phone"></i> <span>ফোন নাম্বার</span></div><span class="info-value">${client.phone}</span></div>
-                    <div class="info-item"><div class="info-left"><i class="fa-solid fa-user-check"></i> <span>চুক্তি করেছেন</span></div><span class="info-value" style="color:var(--success); font-weight:600;">${client.handlerName}</span></div>
-                    <div class="info-item"><div class="info-left"><i class="fa-solid fa-calendar-check"></i> <span>চুক্তির তারিখ</span></div><span class="info-value">${entryDate}</span></div>
-                    <div class="delete-action-container">
-                        <button class="delete-btn" onclick="deleteClient('${client.docId}')"><i class="fa-solid fa-trash-can"></i> চুক্তি শেষ / ক্লাউড থেকে ডিলিট করুন</button>
-                    </div>
-                </div>
-                <div class="document-area">
-                    <p style="margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;"><i class="fa-solid fa-file-image"></i> ডিজিটাল চুক্তিপত্রের কপি</p>
-                    <img src="${client.image}" alt="চুক্তিপত্র">
-                </div>
-            `;
-            document.getElementById('mainDashboard').classList.add('hidden');
-            document.getElementById('profileView').classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // ক্লাউড থেকে পার্মানেন্টলি ডিলিট করার লজিক
-       window.deleteClient = async function(docId) {
-    if (confirm("আপনি কি নিশ্চিত যে এই রেকর্ডটি ক্লাউড ডাটাবেজ থেকে চিরতরে ডিলিট করতে চান? এটি করলে সব ডিভাইস থেকে মুছে যাবে।")) {
+window.deleteClient = async function(docId) {
+    if (confirm("আপনি কি নিশ্চিত যে ডিলিট করতে চান?")) {
         try {
-            // ভুল কোডটি বদলে এখানে সরাসরি db ব্যবহার করা হয়েছে
             await deleteDoc(doc(db, "clients", docId)); 
             document.getElementById('profileView').classList.remove('active');
             document.getElementById('mainDashboard').classList.remove('hidden');
             fetchClients();
         } catch (error) {
             console.error(error);
-            alert("ডিলিট করা সম্ভব হয়নি।");
+            alert("ডিলিট করা সম্ভব হয়নি।");
         }
     }
 }
-
-        // প্রথমবার ওপেনিংয়ে লোড রান
-        fetchClients();
-    </script>
+</script>
 </body>
 </html>
